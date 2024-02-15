@@ -1,8 +1,31 @@
+import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../ui/Button';
 import { formatCurrency } from '../../utils/helpers';
+import { addItem } from '../cart/cartSlice';
+import IncreamentDecreament from '../../ui/IncreamentDecreament';
 function MenuItem({ pizza }) {
-  const { name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
+  const { id, name, unitPrice, ingredients, soldOut, imageUrl } =
+    pizza;
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.cart);
+  const isAddedToCart =
+    cart.findIndex((item) => item.pizzaId === id) !== -1;
 
+  function handleAddToCart() {
+    dispatch(
+      addItem({
+        pizzaId: id,
+        name,
+        unitPrice,
+        quantity: 1,
+        totalPrice: unitPrice * 1
+      })
+    );
+    console.log(pizza);
+    console.log(id);
+    console.log(cart);
+    // console.log(isAddToCart);
+  }
   return (
     <li className='flex gap-4 py-2'>
       <img
@@ -22,7 +45,13 @@ function MenuItem({ pizza }) {
               Sold out
             </p>
           }
-          <Button type='small'>add to cart</Button>
+
+          {!soldOut &&
+            (isAddedToCart ?
+              <IncreamentDecreament id={id} />
+            : <Button type='small' onHandleClick={handleAddToCart}>
+                add to cart
+              </Button>)}
         </div>
       </div>
     </li>
