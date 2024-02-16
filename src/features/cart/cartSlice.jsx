@@ -3,15 +3,6 @@ import { formatCurrency } from '../../utils/helpers';
 
 const initialState = {
   cart: []
-  // cart: [
-  //   {
-  //     pizzaId: null,
-  //     name: '',
-  //     quantity: null,
-  //     unitPrice: null,
-  //     totalPrice: null
-  //   }
-  // ]
 };
 
 const cartSlice = createSlice({
@@ -41,9 +32,10 @@ const cartSlice = createSlice({
         (item) => item.pizzaId === action.payload
       );
       const item = state.cart[index];
-      if (item.quantity === 0) return;
       state.cart[index].quantity -= 1;
       state.cart[index].totalPrice = item.quantity * item.unitPrice;
+      if (item.quantity === 0)
+        cartSlice.caseReducers.deleteItem(state, action);
     },
     clearCart(state) {
       state.cart = [];

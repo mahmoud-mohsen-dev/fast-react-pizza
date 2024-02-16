@@ -2,11 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from './Button';
 import {
   decreaseItemQuantity,
-  deleteItem,
   increaseItemQuantity
 } from '../features/cart/cartSlice';
 
-function IncreamentDecreament({ id }) {
+function UpdateItemQuantity({ id }) {
   const { cart } = useSelector((state) => state.cart);
   const pizzaItem = cart.find((item) => item.pizzaId === id);
   const dispatch = useDispatch();
@@ -15,24 +14,21 @@ function IncreamentDecreament({ id }) {
     dispatch(increaseItemQuantity(id));
   };
   const handleDecreament = () => {
-    if (pizzaItem.quantity === 1) {
-      dispatch(deleteItem(id));
-      return;
-    }
-    console.log(pizzaItem);
     dispatch(decreaseItemQuantity(id));
   };
   return (
-    <div>
-      <Button onHandleClick={handleDecreament} type='small'>
+    <div className='flex items-center gap-2 md:gap-3'>
+      <Button onHandleClick={handleDecreament} type='round'>
         -
       </Button>
-      <span className='mx-2'>{pizzaItem.quantity}</span>
-      <Button onHandleClick={handleIncreament} type='small'>
+      <span className='text-sm font-medium'>
+        {pizzaItem.quantity}
+      </span>
+      <Button onHandleClick={handleIncreament} type='round'>
         +
       </Button>
     </div>
   );
 }
 
-export default IncreamentDecreament;
+export default UpdateItemQuantity;

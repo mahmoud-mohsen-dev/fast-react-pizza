@@ -14,9 +14,6 @@ function Cart() {
   function handleClear() {
     dispatch(clearCart());
   }
-  // function handleOrder(){
-
-  // }
 
   if (!cart.length) return <EmptyCart />;
 
