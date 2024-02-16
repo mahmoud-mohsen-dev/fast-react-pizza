@@ -21,10 +21,6 @@ function MenuItem({ pizza }) {
         totalPrice: unitPrice * 1
       })
     );
-    console.log(pizza);
-    console.log(id);
-    console.log(cart);
-    // console.log(isAddToCart);
   }
   return (
     <li className='flex gap-4 py-2'>

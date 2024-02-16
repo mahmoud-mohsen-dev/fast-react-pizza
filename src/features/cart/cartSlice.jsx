@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { formatCurrency } from '../../utils/helpers';
 
 const initialState = {
   cart: []
@@ -49,6 +50,22 @@ const cartSlice = createSlice({
     }
   }
 });
+
+export function getCart(state) {
+  return state.cart.cart;
+}
+
+export function getTotalCartQuantity(state) {
+  return state.cart.cart.reduce((acc, cur) => acc + cur.quantity, 0);
+}
+
+export function getTotalCartPrice(state) {
+  const value = state.cart.cart.reduce(
+    (acc, cur) => acc + cur.totalPrice,
+    0
+  );
+  return formatCurrency(value);
+}
 
 export const {
   addItem,
