@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { formatCurrency } from '../../utils/helpers';
 
 const initialState = {
   cart: []
@@ -56,7 +55,7 @@ export function getTotalCartPrice(state) {
     (acc, cur) => acc + cur.totalPrice,
     0
   );
-  return formatCurrency(value);
+  return value;
 }
 
 export const {
