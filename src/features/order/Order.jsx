@@ -1,7 +1,7 @@
 // Test ID: IIDSAT
 // cqe92u
 
-import { useLoaderData } from 'react-router-dom';
+import { useFetcher, useLoaderData } from 'react-router-dom';
 import { getOrder } from '../../services/apiRestaurant';
 import OrderItem from './OrderItem';
 import {
@@ -9,11 +9,13 @@ import {
   formatCurrency,
   formatDate
 } from '../../utils/helpers';
+import { useEffect } from 'react';
+import UpdateOrder from './UpdateOrder';
 
 function Order() {
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
   const orderData = useLoaderData();
-  console.log(orderData);
+  // console.log(orderData);
   const {
     id,
     status,
@@ -24,6 +26,14 @@ function Order() {
     cart
   } = orderData;
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
+
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && !fetcher.data) {
+      fetcher.load('/menu');
+    }
+  }, [fetcher]);
 
   return (
     <div className='space-y-8 px-4 py-6'>
@@ -55,11 +65,19 @@ function Order() {
 
       <ul className='divide-y divide-stone-200 border-b border-t'>
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            ingredients={
+              fetcher?.data?.find((el) => el.id === item.pizzaId)
+                ?.ingredients ?? []
+            }
+            isLoadingIngredients={fetcher.state === 'loading'}
+          />
         ))}
       </ul>
 
-      <div className='space-y-2 bg-stone-200 px-6 py-5'>
+      <div className='relative space-y-2 bg-stone-200 px-6 py-5'>
         <p className='text-sm font-medium text-stone-600'>
           Price pizza: {formatCurrency(orderPrice)}
         </p>
@@ -72,6 +90,11 @@ function Order() {
           To pay on delivery:{' '}
           {formatCurrency(orderPrice + priorityPrice)}
         </p>
+        {!priority && (
+          <div className='absolute bottom-4 right-4'>
+            <UpdateOrder order={orderData} />
+          </div>
+        )}
       </div>
     </div>
   );
